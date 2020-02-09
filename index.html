@@ -15,19 +15,47 @@
 <body>
     <div class="container py-5">
         <div class="row">
-            <div class="input-group mb-3">
+            <!-- Project Id -->
+            <!-- <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Project ID" aria-label="Project ID"
                     aria-describedby="button-addon2">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-success" type="button" id="button-addon2">Button</button>
+                    <button class="btn btn-outline-success" type="button" id="button-addon2" onclick="writeUserData();">Submit</button>
+                </div> -->
+            <a href="#" class="btn btn-primary mr-3" onclick="writeUserData();">Submit Data</a>
+            <a href="#" class="btn btn-primary" onclick="fetchData();">Fetch Data</a>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card text-center">
+                    <div class="card-header" id="projectId"></div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="header"></h5>
+                        <p class="card-text" id="body"></p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        2 days ago
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
     <script src="" async defer></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
+    </script>
     <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
     <script>
-        // Your web app's Firebase configuration
         var firebaseConfig = {
             apiKey: "AIzaSyCQRgYkdCyqtzGrvUnTEghX9UdGc-6f7fE",
             authDomain: "test-ckwtsw.firebaseapp.com",
@@ -39,13 +67,40 @@
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
-        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
+        var database = firebase.database();
+
+        function writeUserData() {
+            firebase.database().ref('data/').set({
+                projectID: "H156",
+                projectHeader: "Aabasoft Review",
+                projectBody: "lorem ipsum si donor 1"
+            });
+        }
+
+        function fetchData() {
+            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                console.log(projectID);
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                console.log(projectHeader);
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                console.log(projectBody);
+            });
+        }
+        $(document).ready(function () {
+            // console.log("ready");
+            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().projectBody) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                console.log(projectID);
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                console.log(projectHeader);
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                console.log(projectBody);
+            });
+
+        })
     </script>
 </body>
 
