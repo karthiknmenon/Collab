@@ -23,7 +23,8 @@
                     <button class="btn btn-outline-success" type="button" id="button-addon2" onclick="writeUserData();">Submit</button>
                 </div> -->
             <a href="#" class="btn btn-primary mr-3" onclick="writeUserData();">Submit Data</a>
-            <a href="#" class="btn btn-primary" onclick="fetchData();">Fetch Data</a>
+            <a href="#" class="btn btn-primary m3-3" onclick="fetchData();">Fetch Data</a>
+            <a href="#" class="btn btn-primary" onclick="fillData();">Fill Data</a>
 
         </div>
         <div class="row">
@@ -33,11 +34,9 @@
                     <div class="card-body">
                         <h5 class="card-title" id="header"></h5>
                         <p class="card-text" id="body"></p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
                     </div>
-                    <div class="card-footer text-muted">
-                        2 days ago
-                    </div>
+                    <div class="card-footer text-muted" id="logDate"></div>
                 </div>
             </div>
         </div>
@@ -65,28 +64,55 @@
             messagingSenderId: "640912972565",
             appId: "1:640912972565:web:8a0266535494dadea2271c"
         };
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
+        var ref = firebase.database().ref();
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date + ' at ' + time;
 
         function writeUserData() {
-            firebase.database().ref('data/').set({
+            firebase.database().ref('data/').push({
                 projectID: "H156",
                 projectHeader: "Aabasoft Review",
-                projectBody: "lorem ipsum si donor 1"
+                projectBody: "lorem ipsum si donor 1",
+                log: String(dateTime),
+            });
+        }
+
+        function fillData() {
+            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                document.getElementById("projectId").innerHTML = projectID;
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                document.getElementById("header").innerHTML = projectHeader;
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                document.getElementById("body").innerHTML = projectBody;
+                var logDate = (snapshot.val() && snapshot.val().log);
+                document.getElementById("logDate").innerHTML = logDate;
             });
         }
 
         function fetchData() {
-            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
-                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-                var projectID = (snapshot.val() && snapshot.val().projectID);
-                console.log(projectID);
-                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-                console.log(projectHeader);
-                var projectBody = (snapshot.val() && snapshot.val().projectBody);
-                console.log(projectBody);
+            ref.once('data/', function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    var childKey = childSnapshot.key;
+                    var childData = childSnapshot.val();
+                });
             });
+            // return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+            //     // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+            //     var projectID = (snapshot.val() && snapshot.val().projectID);
+            //     console.log(projectID);
+            //     var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+            //     console.log(projectHeader);
+            //     var projectBody = (snapshot.val() && snapshot.val().projectBody);
+            //     console.log(projectBody);
+            // });
         }
         $(document).ready(function () {
             // console.log("ready");
