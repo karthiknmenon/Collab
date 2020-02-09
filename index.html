@@ -28,13 +28,12 @@
 
         </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" id="contentHere">
                 <div class="card text-center">
                     <div class="card-header" id="projectId"></div>
                     <div class="card-body">
                         <h5 class="card-title" id="header"></h5>
                         <p class="card-text" id="body"></p>
-                        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
                     </div>
                     <div class="card-footer text-muted" id="logDate"></div>
                 </div>
@@ -75,22 +74,17 @@
         var dateTime = date + ' at ' + time;
 
         function writeUserData() {
+            // var newPostKey = firebase.database().ref().child('/data/').push().key;
+            // console.log("newpostKey:" + newPostKey);
             firebase.database().ref('data/').push({
                 projectID: "H156",
                 projectHeader: "Aabasoft Review",
-                projectBody: "lorem ipsum si donor 1",
+                projectBody: "lorem ipsum si donor 1s2",
                 log: String(dateTime),
             });
         }
 
         function fillData() {
-            var commentsRef = firebase.database().ref('post-comments/' + postId);
-            commentsRef.on('child_added', function (data) {
-                addCommentElement(postElement, data.key, data.val().text, data.val().author);
-            });
-
-            // var newPostKey = firebase.database().ref().child('/data/').push().key;
-            console.log("newpostKey:" + postId);
             return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
                 // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
                 var projectID = (snapshot.val() && snapshot.val().projectID);
@@ -104,24 +98,37 @@
             });
         }
 
+        function addToDom(key, data) {
+            const container = document.getElementById("contentHere");
+            const cardHtml = `
+            <div class="card text-center">
+                    <div class="card-header" id="projectId"></div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="header"></h5>
+                        <p class="card-text" id="body"></p>
+                    </div>
+                    <div class="card-footer text-muted" id="logDate"></div>
+                </div>`;
+            const imageEl = document.createElement('div');
+            imageEl.classList.add("col-12", "col-md-12")
+            imageEl.innerHTML = cardHtml;
+            container.appendChild(imageEl);
+        }
+
         function fetchData() {
-            ref.once('value', function (snapshot) {
+            var leadsRef = database.ref('/data/');
+            leadsRef.on('value', function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
                     var childKey = childSnapshot.key;
                     console.log(childKey);
                     var childData = childSnapshot.val();
-                    console.log(childData);
+                    // console.log(childData);
+                    document.getElementById("projectId").innerHTML = childData.projectID;
+                    document.getElementById("body").innerHTML = childData.projectBody;
+                    document.getElementById("header").innerHTML = childData.projectHeader;
+                    document.getElementById("logDate").innerHTML = childData.log;
                 });
             });
-            // return firebase.database().ref('/data/').once('value').then(function (snapshot) {
-            //     // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-            //     var projectID = (snapshot.val() && snapshot.val().projectID);
-            //     console.log(projectID);
-            //     var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-            //     console.log(projectHeader);
-            //     var projectBody = (snapshot.val() && snapshot.val().projectBody);
-            //     console.log(projectBody);
-            // });
         }
         $(document).ready(function () {
             // console.log("ready");
