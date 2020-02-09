@@ -84,7 +84,14 @@
         }
 
         function fillData() {
-            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+            var commentsRef = firebase.database().ref('post-comments/' + postId);
+            commentsRef.on('child_added', function (data) {
+                addCommentElement(postElement, data.key, data.val().text, data.val().author);
+            });
+
+            // var newPostKey = firebase.database().ref().child('/data/').push().key;
+            console.log("newpostKey:" + postId);
+            return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
                 // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
                 var projectID = (snapshot.val() && snapshot.val().projectID);
                 document.getElementById("projectId").innerHTML = projectID;
@@ -98,10 +105,12 @@
         }
 
         function fetchData() {
-            ref.once('data/', function (snapshot) {
+            ref.once('value', function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
                     var childKey = childSnapshot.key;
+                    console.log(childKey);
                     var childData = childSnapshot.val();
+                    console.log(childData);
                 });
             });
             // return firebase.database().ref('/data/').once('value').then(function (snapshot) {
