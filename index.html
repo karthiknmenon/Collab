@@ -116,6 +116,7 @@
         }
 
         function fetchData() {
+            const values = [];
             var leadsRef = database.ref('/data/');
             leadsRef.on('value', function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
@@ -127,6 +128,13 @@
                     document.getElementById("body").innerHTML = childData.projectBody;
                     document.getElementById("header").innerHTML = childData.projectHeader;
                     document.getElementById("logDate").innerHTML = childData.log;
+                    values.push({
+                        childKey,
+                        childData
+                    });
+                });
+                values.reverse().map((value) => {
+                    addToDom(value.childKey, value.childData);
                 });
             });
         }
