@@ -29,14 +29,14 @@
         </div>
         <div class="row">
             <div class="col-lg-12" id="contentHere">
-                <div class="card text-center">
+                <!-- <div class="card text-center">
                     <div class="card-header" id="projectId"></div>
                     <div class="card-body">
                         <h5 class="card-title" id="header"></h5>
                         <p class="card-text" id="body"></p>
                     </div>
                     <div class="card-footer text-muted" id="logDate"></div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
             firebase.database().ref('data/').push({
                 projectID: "H156",
                 projectHeader: "Aabasoft Review",
-                projectBody: "lorem ipsum si donor 1s2",
+                projectBody: "Add encryption of packet data.",
                 log: String(dateTime),
             });
         }
@@ -124,10 +124,10 @@
                     console.log(childKey);
                     var childData = childSnapshot.val();
                     // console.log(childData);
-                    document.getElementById("projectId").innerHTML = childData.projectID;
-                    document.getElementById("body").innerHTML = childData.projectBody;
-                    document.getElementById("header").innerHTML = childData.projectHeader;
-                    document.getElementById("logDate").innerHTML = childData.log;
+                    // document.getElementById("projectId").innerHTML = childData.projectID;
+                    // document.getElementById("body").innerHTML = childData.projectBody;
+                    // document.getElementById("header").innerHTML = childData.projectHeader;
+                    // document.getElementById("logDate").innerHTML = childData.log;
                     values.push({
                         childKey,
                         childData
