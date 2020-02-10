@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Collab</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <!-- Project Id -->
+            <!-- <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Project ID" aria-label="Project ID"
+                    aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success" type="button" id="button-addon2" onclick="writeUserData();">Submit</button>
+                </div> -->
+            <a href="#" class="btn btn-primary mr-3" onclick="writeUserData();">Submit Data</a>
+            <a href="#" class="btn btn-primary mr-3" onclick="fetchData();">Fetch Data</a>
+            <a href="#" class="btn btn-primary mr-3" onclick="fillData();">Fill Data</a>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-12" id="contentHere">
+                <!-- <div class="card text-center">
+                    <div class="card-header" id="projectId"></div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="header"></h5>
+                        <p class="card-text" id="body"></p>
+                    </div>
+                    <div class="card-footer text-muted" id="logDate"></div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="" async defer></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyCQRgYkdCyqtzGrvUnTEghX9UdGc-6f7fE",
+            authDomain: "test-ckwtsw.firebaseapp.com",
+            databaseURL: "https://test-ckwtsw.firebaseio.com",
+            projectId: "test-ckwtsw",
+            storageBucket: "test-ckwtsw.appspot.com",
+            messagingSenderId: "640912972565",
+            appId: "1:640912972565:web:8a0266535494dadea2271c"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        var ref = firebase.database().ref();
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date + ' at ' + time;
+
+        function writeUserData() {
+            // var newPostKey = firebase.database().ref().child('/data/').push().key;
+            // console.log("newpostKey:" + newPostKey);
+            firebase.database().ref('data/').push({
+                projectID: "H156",
+                projectHeader: "Aabasoft Review",
+                projectBody: "Add encryption of packet data.",
+                log: String(dateTime),
+            });
+        }
+
+        function fillData() {
+            return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                document.getElementById("projectId").innerHTML = projectID;
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                document.getElementById("header").innerHTML = projectHeader;
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                document.getElementById("body").innerHTML = projectBody;
+                var logDate = (snapshot.val() && snapshot.val().log);
+                document.getElementById("logDate").innerHTML = logDate;
+            });
+        }
+
+        function addToDom(key, data) {
+            const container = document.getElementById("contentHere");
+            const cardHtml = `
+            <div class="card text-center">
+                    <div class="card-header" id="projectId">${data.projectID}</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="header">${data.projectHeader}</h5>
+                        <p class="card-text" id="body">${data.projectBody}</p>
+                    </div>
+                    <div class="card-footer text-muted" id="logDate">${data.log}</div>
+                </div>`;
+            const imageEl = document.createElement('div');
+            imageEl.classList.add("col-12", "col-md-12")
+            imageEl.innerHTML = cardHtml;
+            container.appendChild(imageEl);
+        }
+
+        function fetchData() {
+            const values = [];
+            var leadsRef = database.ref('/data/');
+            leadsRef.on('value', function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    var childKey = childSnapshot.key;
+                    console.log(childKey);
+                    var childData = childSnapshot.val();
+                    // console.log(childData);
+                    // document.getElementById("projectId").innerHTML = childData.projectID;
+                    // document.getElementById("body").innerHTML = childData.projectBody;
+                    // document.getElementById("header").innerHTML = childData.projectHeader;
+                    // document.getElementById("logDate").innerHTML = childData.log;
+                    values.push({
+                        childKey,
+                        childData
+                    });
+                });
+                values.reverse().map((value) => {
+                    addToDom(value.childKey, value.childData);
+                });
+                console.log(values);
+            });
+        }
+        $(document).ready(function () {
+            // console.log("ready");
+            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().projectBody) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                console.log(projectID);
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                console.log(projectHeader);
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                console.log(projectBody);
+            });
+
+        })
+    </script>
+</body>
+
+</html>
