@@ -35,8 +35,8 @@
     </nav>
     <div class="container">
         <div class="row mt-3">
-            <div class="col-lg-12">
-                <div class="card text-center mt-3">
+            <div class="col-lg-12" id="contentHere">
+                <!-- <div class="card text-center mt-3">
                     <div class="card-header" id="projectId">H123</div>
                     <div class="card-body">
                         <h5 class="card-title" id="header">Header</h5>
@@ -44,7 +44,7 @@
                         <button type="button" class="btn btn-outline-dark">Check</button>
                     </div>
                     <div class="card-footer text-muted" id="logDate">Timestamp</div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -89,89 +89,125 @@
                 // An error happened.
             });
         });
-        var tId, uid, email;
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                uid = firebase.auth().currentUser.uid;
-                email = firebase.auth().currentUser.email;
-                console.log(uid);
-                // console.log(email);
-                // console.log('here2');
 
-                firebase.database().ref().child('projectid').once("value", function (snapshot) {
-                    // console.log('here');
-                    var tId = snapshot.child(uid).val();
-                    console.log(tId);
-
-                    document.getElementById('projectid').value = tId;
-                    document.getElementById('email').value = email;
-                })
-
-            } else {
-                // No user is signed in.
-
-            }
-        });
-        $("#writeForm").submit(function (e) {
-            e.preventDefault();
-        })
-
-        function fetchValues() {
-            // e.preventDefault();
-            var pb = document.querySelector("#pbody").value;
-            var ph = document.querySelector("#pheader").value;
-            console.log("Body:" + pb);
-            console.log("Header:" + ph);
-            writeUserData(pb, ph);
-        }
-
-        function writeUserData(body, header) {
-            var tId, uid, email;
+        function writeUserData() {
             // var newPostKey = firebase.database().ref().child('/data/').push().key;
             // console.log("newpostKey:" + newPostKey);
-            firebase.auth().onAuthStateChanged(function (user) {
-                if (user) {
-                    uid = firebase.auth().currentUser.uid;
-                    email = firebase.auth().currentUser.email;
-                    console.log(uid);
-                    // console.log(email);
-                    // console.log('here2');
-
-                    firebase.database().ref().child('projectid').once("value", function (snapshot) {
-                        // console.log('here');
-                        var tId = snapshot.child(uid).val();
-                        console.log("tId: " + tId);
-                        firebase.database().ref(tId + '/').push({
-                            projectID: String(tId),
-                            projectHeader: String(header),
-                            projectBody: String(body),
-                            log: String(dateTime),
-                        });
-                    })
-                    // $("#pheader").value="";
-                    // $("#pbody").value="";
-
-                } else {
-                    // No user is signed in.
-
-                }
+            firebase.database().ref('data/').push({
+                projectID: "H156",
+                projectHeader: "Aabasoft Review",
+                projectBody: "Add encryption of packet data.",
+                log: String(dateTime),
             });
-
-
         }
-        $(document).ready(function () {
-            // console.log("ready");
-            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
-                // var projectID = (snapshot.val() && snapshot.val().projectBody) || 'Anonymous';
-                var projectID = (snapshot.val() && snapshot.val().projectID);
-                console.log(projectID);
-                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-                console.log(projectHeader);
-                var projectBody = (snapshot.val() && snapshot.val().projectBody);
-                console.log(projectBody);
-            });
 
-        })
+        function fillData() {
+            return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                document.getElementById("projectId").innerHTML = projectID;
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                document.getElementById("header").innerHTML = projectHeader;
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                document.getElementById("body").innerHTML = projectBody;
+                var logDate = (snapshot.val() && snapshot.val().log);
+                document.getElementById("logDate").innerHTML = logDate;
+            });
+        }
+
+        function addToDom(key, data) {
+            const container = document.getElementById("contentHere");
+            // console.log("addToDom: "+key);
+            const cardHtml = `
+                <div class="card text-center mt-3">
+                        <div class="card-header" id="projectId">${data.projectID}</div>
+                        <div class="card-body">
+                            <h5 class="card-title" id="header">${data.projectHeader}</h5>
+                            <p class="card-text" id="body">${data.projectBody}</p>
+                            <button type="button" class="btn btn-outline-dark" id="childKey" onclick="changeStatus()">Check</button>
+                            <input type="hidden" id="key" value="${key}"></input>
+                        </div>
+                        <div class="card-footer text-muted" id="logDate">${data.log}</div>
+                    </div>`;
+            const imageEl = document.createElement('div');
+            imageEl.classList.add("col-12", "col-md-12")
+            imageEl.innerHTML = cardHtml;
+            container.appendChild(imageEl);
+        }
+
+        function changeStatus() {
+            var uniqueId = document.getElementById("key").value;
+            // console.log("Change Status:"+uniqueId);
+            firebase.auth().onAuthStateChanged(function (user) {
+                        if (user) {
+                            uid = firebase.auth().currentUser.uid;
+                            email = firebase.auth().currentUser.email;
+                            // console.log(uid);
+                            firebase.database().ref().child('projectid').once("value",
+                                function (snapshot) {
+                                    // console.log('here');
+                                    var tId = snapshot.child(uid).val();
+                                    firebase.database().ref(tId + '/' + uniqueId).push({
+                                        projectID: "H156",
+                                        projectHeader: "Aabasoft Review",
+                                        projectBody: "Add encryption of packet data.",
+                                        log: String(dateTime),
+                                        status: "ok"
+                                    });
+                                }
+                            )}
+                        });
+                    };
+                    $(document).ready(function () {
+                        firebase.auth().onAuthStateChanged(function (user) {
+                            if (user) {
+                                uid = firebase.auth().currentUser.uid;
+                                email = firebase.auth().currentUser.email;
+                                console.log(uid);
+                                // console.log(email);
+                                // console.log('here2');
+
+                                firebase.database().ref().child('projectid').once("value",
+                                    function (
+                                        snapshot) {
+                                        // console.log('here');
+                                        var tId = snapshot.child(uid).val();
+                                        // console.log("tId: " + tId);
+                                        const values = [];
+                                        var leadsRef = database.ref(tId + '/');
+                                        leadsRef.on('value', function (snapshot) {
+                                            snapshot.forEach(function (
+                                                childSnapshot) {
+                                                var childKey =
+                                                    childSnapshot
+                                                    .key;
+                                                // console.log(childKey);
+                                                var childData =
+                                                    childSnapshot
+                                                    .val();
+                                                values.push({
+                                                    childKey,
+                                                    childData
+                                                });
+                                                // console.log(childData.log)
+                                            });
+                                            values.reverse().map((value) => {
+                                                addToDom(value.childKey,
+                                                    value
+                                                    .childData);
+                                            });
+                                            // console.log(values);
+                                            // console.log(values.log);
+                                        });
+
+                                    })
+
+                            } else {
+                                // No user is signed in.
+
+                            }
+                        })
+                    })
     </script>
 </body>
 
