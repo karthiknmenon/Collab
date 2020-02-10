@@ -23,10 +23,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="./index.html">Home<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link " href="./index.html">Home</a>
                 <a class="nav-item nav-link" href="#">Docs</a>
                 <a class="nav-item nav-link" href="./addNew.html">Write</a>
-                <a class="nav-item nav-link" href="./review.html">Log</a>
+                <a class="nav-item nav-link active" href="./review.html"><span class="sr-only">(current)</span>Log</a>
             </div>
 
         </div>
@@ -172,20 +172,6 @@
 
                 }
             })
-        })
-
-        $(document).ready(function () {
-            // console.log("ready");
-            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
-                // var projectID = (snapshot.val() && snapshot.val().projectBody) || 'Anonymous';
-                var projectID = (snapshot.val() && snapshot.val().projectID);
-                console.log(projectID);
-                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-                console.log(projectHeader);
-                var projectBody = (snapshot.val() && snapshot.val().projectBody);
-                console.log(projectBody);
-            });
-
         })
     </script>
 </body>
