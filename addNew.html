@@ -120,7 +120,7 @@
                 // An error happened.
             });
         });
-        var house, uid, email;
+        var tId, uid, email;
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 uid = firebase.auth().currentUser.uid;
@@ -131,10 +131,10 @@
 
                 firebase.database().ref().child('projectid').once("value", function (snapshot) {
                     // console.log('here');
-                    var house = snapshot.child(uid).val();
-                    console.log(house);
+                    var tId = snapshot.child(uid).val();
+                    console.log(tId);
 
-                    document.getElementById('projectid').value = house;
+                    document.getElementById('projectid').value = tId;
                     document.getElementById('email').value = email;
                 })
 
@@ -157,16 +157,36 @@
         }
 
         function writeUserData(body, header) {
+            var tId, uid, email;
             // var newPostKey = firebase.database().ref().child('/data/').push().key;
             // console.log("newpostKey:" + newPostKey);
-            var pb = document.getEleme
-            firebase.database().ref('data/').push({
-                projectID: "H156",
-                projectHeader: String(header),
-                projectBody: String(body),
-                log: String(dateTime),
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    uid = firebase.auth().currentUser.uid;
+                    email = firebase.auth().currentUser.email;
+                    console.log(uid);
+                    // console.log(email);
+                    // console.log('here2');
+
+                    firebase.database().ref().child('projectid').once("value", function (snapshot) {
+                        // console.log('here');
+                        var tId = snapshot.child(uid).val();
+                        console.log("tId: "+tId);
+                        firebase.database().ref(tId + '/').push({
+                            projectID: String(tId),
+                            projectHeader: String(header),
+                            projectBody: String(body),
+                            log: String(dateTime),
+                        });
+                    })
+
+                } else {
+                    // No user is signed in.
+
+                }
             });
-            document.location.reload(true);
+
+            // document.location.reload(true);
         }
         $(document).ready(function () {
             // console.log("ready");

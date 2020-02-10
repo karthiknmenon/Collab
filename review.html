@@ -13,38 +13,28 @@
 </head>
 
 <body>
-        <nav class="navbar navbar-light bg-transparent navbar-expand-lg">
-                <a class="navbar-brand" href="#">
-                    <img src="./assets/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link active" href="./index.html">Home<span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" href="#">Docs</a>
-                        <a class="nav-item nav-link" href="./addNew.html">Write</a>
-                        <a class="nav-item nav-link" href="./review.html">Log</a>
-                    </div>
-        
-                </div>
-                <button class="btn btn-xs btn-outline-danger align-right" id="logout-button">Log Out</button>
-            </nav>
+    <nav class="navbar navbar-light bg-transparent navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="./assets/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="./index.html">Home<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="#">Docs</a>
+                <a class="nav-item nav-link" href="./addNew.html">Write</a>
+                <a class="nav-item nav-link" href="./review.html">Log</a>
+            </div>
+
+        </div>
+        <button class="btn btn-xs btn-outline-danger align-right" id="logout-button">Log Out</button>
+    </nav>
     <div class="container py-5 mt-3">
         <div class="row">
             <h3 class="display-5 text-muted">Project Log</h3>
-            <!-- Project Id -->
-            <!-- <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Project ID" aria-label="Project ID"
-                    aria-describedby="button-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-success" type="button" id="button-addon2" onclick="writeUserData();">Submit</button>
-                </div> -->
-            <!-- <a href="#" class="btn btn-primary mr-3" onclick="writeUserData();">Submit Data</a> -->
-            <!-- <a href="#" class="btn btn-primary mr-3" onclick="fetchData();">Fetch Data</a> -->
-            <!-- <a href="#" class="btn btn-primary mr-3" onclick="fillData();">Fill Data</a> -->
 
         </div>
         <div class="row mt-3">
@@ -144,31 +134,46 @@
             imageEl.innerHTML = cardHtml;
             container.appendChild(imageEl);
         }
-        $(document).ready(
-            function fetchData() {
-                const values = [];
-                var leadsRef = database.ref('/data/');
-                leadsRef.on('value', function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        var childKey = childSnapshot.key;
-                        console.log(childKey);
-                        var childData = childSnapshot.val();
-                        // console.log(childData);
-                        // document.getElementById("projectId").innerHTML = childData.projectID;
-                        // document.getElementById("body").innerHTML = childData.projectBody;
-                        // document.getElementById("header").innerHTML = childData.projectHeader;
-                        // document.getElementById("logDate").innerHTML = childData.log;
-                        values.push({
-                            childKey,
-                            childData
+        $(document).ready(function () {
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    uid = firebase.auth().currentUser.uid;
+                    email = firebase.auth().currentUser.email;
+                    console.log(uid);
+                    // console.log(email);
+                    // console.log('here2');
+
+                    firebase.database().ref().child('projectid').once("value", function (snapshot) {
+                        // console.log('here');
+                        var tId = snapshot.child(uid).val();
+                        console.log("tId: " + tId);
+                        const values = [];
+                        var leadsRef = database.ref(tId + '/');
+                        leadsRef.on('value', function (snapshot) {
+                            snapshot.forEach(function (childSnapshot) {
+                                var childKey = childSnapshot.key;
+                                console.log(childKey);
+                                var childData = childSnapshot.val();
+                                values.push({
+                                    childKey,
+                                    childData
+                                });
+                            });
+                            values.reverse().map((value) => {
+                                addToDom(value.childKey, value.childData);
+                            });
+                            console.log(values);
                         });
-                    });
-                    values.reverse().map((value) => {
-                        addToDom(value.childKey, value.childData);
-                    });
-                    console.log(values);
-                });
-            });
+
+                    })
+
+                } else {
+                    // No user is signed in.
+
+                }
+            })
+        })
+
         $(document).ready(function () {
             // console.log("ready");
             return firebase.database().ref('/data/').once('value').then(function (snapshot) {
