@@ -13,6 +13,23 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-light bg-transparent navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="./assets/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="./index.html">Home<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="#">Docs</a>
+            </div>
+
+        </div>
+        <button class="btn btn-xs btn-outline-danger align-right" id="logout-button">Log Out</button>
+    </nav>
     <div class="container py-5">
         <div class="row">
             <!-- Project Id -->
@@ -72,6 +89,16 @@
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date + ' at ' + time;
+
+        $("#logout-button").click(function (event) {
+            event.preventDefault();
+            firebase.auth().signOut().then(function () {
+                // Sign-out successful.
+                window.location.href = "login.html";
+            }).catch(function (error) {
+                // An error happened.
+            });
+        });
 
         function writeUserData() {
             // var newPostKey = firebase.database().ref().child('/data/').push().key;
