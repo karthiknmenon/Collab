@@ -16,46 +16,88 @@
 </head>
 
 <body>
-        <nav class="navbar navbar-light bg-transparent navbar-expand-lg">
-                <a class="navbar-brand" href="#">
-                    <img src="./assets/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link " href="./index.html">Home</a>
-                        <a class="nav-item nav-link" href="#">Docs</a>
-                        <a class="nav-item nav-link active" href="./login.html"><span class="sr-only">(current)</span>Login</a>
-                    </div>
-                </div>
-            </nav>
+    <nav class="navbar navbar-light bg-transparent navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="./assets/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link " href="./index.html">Home</a>
+                <a class="nav-item nav-link" href="#">Docs</a>
+                <a class="nav-item nav-link active" href="./login.html"><span class="sr-only">(current)</span>Login</a>
+            </div>
+        </div>
+    </nav>
     <div class="container">
-        <div class="d-flex mt-5 pt-5 h-100 align-items-center">
-            <div class="col-lg-6 pr-5">
+        <div class="d-flex mt-5 pt-5 align-items-center">
+            <div class=" col-12 col-lg-6 col-xs-12">
                 <img src="./assets/images/sign-in.svg" style="width: 100%; height: 100%;">
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-12 col-xs-12">
                 <form>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
                         <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
                             else.</small> -->
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1">
+                        <input type="password" class="form-control" id="password">
                     </div>
-                    <button type="submit" class="btn btn-outline-success">Submit</button>
+                    <button type="submit" id="login-button" class="btn btn-outline-success">Submit</button>
                 </form>
             </div>
         </div>
     </div>
-    <script src="" async defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-analytics.js"></script>
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyCQRgYkdCyqtzGrvUnTEghX9UdGc-6f7fE",
+            authDomain: "test-ckwtsw.firebaseapp.com",
+            databaseURL: "https://test-ckwtsw.firebaseio.com",
+            projectId: "test-ckwtsw",
+            storageBucket: "test-ckwtsw.appspot.com",
+            messagingSenderId: "640912972565",
+            appId: "1:640912972565:web:8a0266535494dadea2271c"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        // firebase.analytics();
+        $("#login-button").click(function (event) {
+            event.preventDefault();
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                $(".error").show(2000);
+                $('#errorText').text(errorMessage);
+            });
+        });
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+
+                window.location.href = "review.html";
+            } else {
+
+                console.log("Signed Out!");
+            }
+        });
+    </script>
+    <script src="" async defer></script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
