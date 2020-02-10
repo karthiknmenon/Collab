@@ -158,11 +158,13 @@
                                     childKey,
                                     childData
                                 });
+                                console.log(childData.log)
                             });
                             values.reverse().map((value) => {
                                 addToDom(value.childKey, value.childData);
                             });
                             console.log(values);
+                            // console.log(values.log);
                         });
 
                     })
