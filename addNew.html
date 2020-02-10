@@ -25,7 +25,8 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="./index.html">Home</a>
                 <a class="nav-item nav-link" href="#">Docs</a>
-                <a class="nav-item nav-link active" href="./addNew.html">Write <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link active" href="./addNew.html">Write <span
+                        class="sr-only">(current)</span></a>
                 <a class="nav-item nav-link" href="./review.html">Log</a>
             </div>
 
@@ -171,7 +172,7 @@
                     firebase.database().ref().child('projectid').once("value", function (snapshot) {
                         // console.log('here');
                         var tId = snapshot.child(uid).val();
-                        console.log("tId: "+tId);
+                        console.log("tId: " + tId);
                         firebase.database().ref(tId + '/').push({
                             projectID: String(tId),
                             projectHeader: String(header),
@@ -179,6 +180,8 @@
                             log: String(dateTime),
                         });
                     })
+                    // $("#pheader").value="";
+                    // $("#pbody").value="";
 
                 } else {
                     // No user is signed in.
@@ -186,7 +189,7 @@
                 }
             });
 
-            // document.location.reload(true);
+        
         }
         $(document).ready(function () {
             // console.log("ready");
