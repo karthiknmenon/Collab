@@ -33,7 +33,8 @@
     </nav>
     <div class="container py-5 mt-3">
         <div class="row">
-            <h3 class="display-5 text-muted">Project Log</h3>
+            <h3 class="display-5 text-muted">Write to Log</h3>
+            <!-- <h3 class="text-muted">please wait for email-id and project-id to auto-fetch.</h3> -->
             <!-- Project Id -->
             <!-- <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Project ID" aria-label="Project ID"
@@ -46,16 +47,33 @@
             <!-- <a href="#" class="btn btn-primary mr-3" onclick="fillData();">Fill Data</a> -->
 
         </div>
-        <div class="row mt-3">
-            <div class="col-lg-12" id="contentHere">
-                <!-- <div class="card text-center">
-                    <div class="card-header" id="projectId"></div>
-                    <div class="card-body">
-                        <h5 class="card-title" id="header"></h5>
-                        <p class="card-text" id="body"></p>
+        <div class="row">
+            <p class="text-muted">Please wait for Email-id and Project-Id to auto fetch.</p>
+            <div class="col-lg-8 offset-lg-2" id="contentHere">
+                <form class="mt-1">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email</label>
+                        <input type="text" class="form-control" id="email" aria-describedby="emailHelp">
+                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                            else.</small> -->
                     </div>
-                    <div class="card-footer text-muted" id="logDate"></div>
-                </div> -->
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Project Id</label>
+                        <input type="text" class="form-control" id="projectid" aria-describedby="emailHelp">
+                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                            else.</small> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Project Header</label>
+                        <input type="text" class="form-control" id="pheader">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Project Body</label>
+                        <textarea class="form-control" id="pbody" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-outline-success" onclick="fetchValues()">Submit</button>
+                </form>
             </div>
         </div>
     </div>
@@ -101,10 +119,39 @@
                 // An error happened.
             });
         });
+        var house, uid, email;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                uid = firebase.auth().currentUser.uid;
+                email = firebase.auth().currentUser.email;
+                console.log(uid);
+                // console.log(email);
+                // console.log('here2');
 
+                firebase.database().ref().child('projectid').once("value", function (snapshot) {
+                    // console.log('here');
+                    var house = snapshot.child(uid).val();
+                    console.log(house);
+
+                    document.getElementById('projectid').value = house;
+                    document.getElementById('email').value = email;
+                })
+
+            } else {
+                // No user is signed in.
+
+            }
+        });
+        function fetchValues(){
+            var pb = document.querySelector("#pbody");
+            var ph = document.querySelector("#pheader");
+            console.log("Body:"+pb);
+            console.log("Header:"+ph);
+        }
         function writeUserData() {
             // var newPostKey = firebase.database().ref().child('/data/').push().key;
             // console.log("newpostKey:" + newPostKey);
+            var pb = document.getEleme
             firebase.database().ref('data/').push({
                 projectID: "H156",
                 projectHeader: "Aabasoft Review",
@@ -113,61 +160,36 @@
             });
         }
 
-        function fillData() {
-            return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
-                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-                var projectID = (snapshot.val() && snapshot.val().projectID);
-                document.getElementById("projectId").innerHTML = projectID;
-                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-                document.getElementById("header").innerHTML = projectHeader;
-                var projectBody = (snapshot.val() && snapshot.val().projectBody);
-                document.getElementById("body").innerHTML = projectBody;
-                var logDate = (snapshot.val() && snapshot.val().log);
-                document.getElementById("logDate").innerHTML = logDate;
-            });
-        }
+        // function fillData() {
+        //     return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
+        //         // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        //         var projectID = (snapshot.val() && snapshot.val().projectID);
+        //         document.getElementById("projectId").innerHTML = projectID;
+        //         var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+        //         document.getElementById("header").innerHTML = projectHeader;
+        //         var projectBody = (snapshot.val() && snapshot.val().projectBody);
+        //         document.getElementById("body").innerHTML = projectBody;
+        //         var logDate = (snapshot.val() && snapshot.val().log);
+        //         document.getElementById("logDate").innerHTML = logDate;
+        //     });
+        // }
 
-        function addToDom(key, data) {
-            const container = document.getElementById("contentHere");
-            const cardHtml = `
-            <div class="card text-center">
-                    <div class="card-header" id="projectId">${data.projectID}</div>
-                    <div class="card-body">
-                        <h5 class="card-title" id="header">${data.projectHeader}</h5>
-                        <p class="card-text" id="body">${data.projectBody}</p>
-                    </div>
-                    <div class="card-footer text-muted" id="logDate">${data.log}</div>
-                </div>`;
-            const imageEl = document.createElement('div');
-            imageEl.classList.add("col-12", "col-md-12")
-            imageEl.innerHTML = cardHtml;
-            container.appendChild(imageEl);
-        }
-        $(document).ready(
-            function fetchData() {
-                const values = [];
-                var leadsRef = database.ref('/data/');
-                leadsRef.on('value', function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        var childKey = childSnapshot.key;
-                        console.log(childKey);
-                        var childData = childSnapshot.val();
-                        // console.log(childData);
-                        // document.getElementById("projectId").innerHTML = childData.projectID;
-                        // document.getElementById("body").innerHTML = childData.projectBody;
-                        // document.getElementById("header").innerHTML = childData.projectHeader;
-                        // document.getElementById("logDate").innerHTML = childData.log;
-                        values.push({
-                            childKey,
-                            childData
-                        });
-                    });
-                    values.reverse().map((value) => {
-                        addToDom(value.childKey, value.childData);
-                    });
-                    console.log(values);
-                });
-            });
+        // function addToDom(key, data) {
+        //     const container = document.getElementById("contentHere");
+        //     const cardHtml = `
+        //     <div class="card text-center">
+        //             <div class="card-header" id="projectId">${data.projectID}</div>
+        //             <div class="card-body">
+        //                 <h5 class="card-title" id="header">${data.projectHeader}</h5>
+        //                 <p class="card-text" id="body">${data.projectBody}</p>
+        //             </div>
+        //             <div class="card-footer text-muted" id="logDate">${data.log}</div>
+        //         </div>`;
+        //     const imageEl = document.createElement('div');
+        //     imageEl.classList.add("col-12", "col-md-12")
+        //     imageEl.innerHTML = cardHtml;
+        //     container.appendChild(imageEl);
+        // }
         $(document).ready(function () {
             // console.log("ready");
             return firebase.database().ref('/data/').once('value').then(function (snapshot) {
