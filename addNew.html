@@ -26,6 +26,7 @@
                 <a class="nav-item nav-link active" href="./index.html">Home<span class="sr-only">(current)</span></a>
                 <a class="nav-item nav-link" href="#">Docs</a>
                 <a class="nav-item nav-link" href="./addNew.html">Write</a>
+                <a class="nav-item nav-link" href="./review.html">Log</a>
             </div>
 
         </div>
@@ -50,7 +51,7 @@
         <div class="row">
             <p class="text-muted">Please wait for Email-id and Project-Id to auto fetch.</p>
             <div class="col-lg-8 offset-lg-2" id="contentHere">
-                <form class="mt-1">
+                <form class="mt-1" id="writeForm">
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email</label>
                         <input type="text" class="form-control" id="email" aria-describedby="emailHelp">
@@ -142,54 +143,31 @@
 
             }
         });
-        function fetchValues(){
-            var pb = document.querySelector("#pbody");
-            var ph = document.querySelector("#pheader");
-            console.log("Body:"+pb);
-            console.log("Header:"+ph);
+        $("#writeForm").submit(function (e) {
+            e.preventDefault();
+        })
+
+        function fetchValues() {
+            // e.preventDefault();
+            var pb = document.querySelector("#pbody").value;
+            var ph = document.querySelector("#pheader").value;
+            console.log("Body:" + pb);
+            console.log("Header:" + ph);
+            writeUserData(pb, ph);
         }
-        function writeUserData() {
+
+        function writeUserData(body, header) {
             // var newPostKey = firebase.database().ref().child('/data/').push().key;
             // console.log("newpostKey:" + newPostKey);
             var pb = document.getEleme
             firebase.database().ref('data/').push({
                 projectID: "H156",
-                projectHeader: "Aabasoft Review",
-                projectBody: "Add encryption of packet data.",
+                projectHeader: String(header),
+                projectBody: String(body),
                 log: String(dateTime),
             });
+            document.location.reload(true);
         }
-
-        // function fillData() {
-        //     return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
-        //         // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-        //         var projectID = (snapshot.val() && snapshot.val().projectID);
-        //         document.getElementById("projectId").innerHTML = projectID;
-        //         var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-        //         document.getElementById("header").innerHTML = projectHeader;
-        //         var projectBody = (snapshot.val() && snapshot.val().projectBody);
-        //         document.getElementById("body").innerHTML = projectBody;
-        //         var logDate = (snapshot.val() && snapshot.val().log);
-        //         document.getElementById("logDate").innerHTML = logDate;
-        //     });
-        // }
-
-        // function addToDom(key, data) {
-        //     const container = document.getElementById("contentHere");
-        //     const cardHtml = `
-        //     <div class="card text-center">
-        //             <div class="card-header" id="projectId">${data.projectID}</div>
-        //             <div class="card-body">
-        //                 <h5 class="card-title" id="header">${data.projectHeader}</h5>
-        //                 <p class="card-text" id="body">${data.projectBody}</p>
-        //             </div>
-        //             <div class="card-footer text-muted" id="logDate">${data.log}</div>
-        //         </div>`;
-        //     const imageEl = document.createElement('div');
-        //     imageEl.classList.add("col-12", "col-md-12")
-        //     imageEl.innerHTML = cardHtml;
-        //     container.appendChild(imageEl);
-        // }
         $(document).ready(function () {
             // console.log("ready");
             return firebase.database().ref('/data/').once('value').then(function (snapshot) {
