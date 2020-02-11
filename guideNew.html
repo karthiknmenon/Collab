@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Collab</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-transparent navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="./assets/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="./index.html">Home</a>
+                <a class="nav-item nav-link" href="#">Docs</a>
+                <a class="nav-item nav-link active" href="./addNew.html">Write <span
+                        class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="./guide.html">Guide</a>
+            </div>
+
+        </div>
+        <button class="btn btn-xs btn-outline-danger align-right" id="logout-button">Log Out</button>
+    </nav>
+    <div class="container py-5 mt-3">
+        <div class="row">
+            <h3 class="display-5 text-muted">Write to Log</h3>
+            <!-- <h3 class="text-muted">please wait for email-id and project-id to auto-fetch.</h3> -->
+            <!-- Project Id -->
+            <!-- <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Project ID" aria-label="Project ID"
+                    aria-describedby="button-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success" type="button" id="button-addon2" onclick="writeUserData();">Submit</button>
+                </div> -->
+            <!-- <a href="#" class="btn btn-primary mr-3" onclick="writeUserData();">Submit Data</a> -->
+            <!-- <a href="#" class="btn btn-primary mr-3" onclick="fetchData();">Fetch Data</a> -->
+            <!-- <a href="#" class="btn btn-primary mr-3" onclick="fillData();">Fill Data</a> -->
+
+        </div>
+        <div class="row">
+            <p class="text-muted">Please wait for Email-id and Project-Id to auto fetch.</p>
+            <div class="col-lg-8 offset-lg-2" id="contentHere">
+                <form class="mt-1" id="writeForm">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email</label>
+                        <input type="text" class="form-control" id="email" aria-describedby="emailHelp" disabled>
+                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                            else.</small> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Project Id</label>
+                        <input type="text" class="form-control" id="projectid" aria-describedby="emailHelp" disabled>
+                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                            else.</small> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Project Header</label>
+                        <input type="text" class="form-control" id="pheader">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Project Body</label>
+                        <textarea class="form-control" id="pbody" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-outline-success" onclick="fetchValues()">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="" async defer></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyCQRgYkdCyqtzGrvUnTEghX9UdGc-6f7fE",
+            authDomain: "test-ckwtsw.firebaseapp.com",
+            databaseURL: "https://test-ckwtsw.firebaseio.com",
+            projectId: "test-ckwtsw",
+            storageBucket: "test-ckwtsw.appspot.com",
+            messagingSenderId: "640912972565",
+            appId: "1:640912972565:web:8a0266535494dadea2271c"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        var ref = firebase.database().ref();
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date + ' at ' + time;
+
+        $("#logout-button").click(function (event) {
+            event.preventDefault();
+            firebase.auth().signOut().then(function () {
+                // Sign-out successful.
+                window.location.href = "login.html";
+            }).catch(function (error) {
+                // An error happened.
+            });
+        });
+        var tId, uid, email;
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                uid = firebase.auth().currentUser.uid;
+                email = firebase.auth().currentUser.email;
+                console.log(uid);
+                // console.log(email);
+                // console.log('here2');
+
+                firebase.database().ref().child('projectid').once("value", function (snapshot) {
+                    // console.log('here');
+                    var tId = snapshot.child(uid).val();
+                    console.log(tId);
+
+                    document.getElementById('projectid').value = tId;
+                    document.getElementById('email').value = email;
+                })
+
+            } else {
+                // No user is signed in.
+
+            }
+        });
+        $("#writeForm").submit(function (e) {
+            e.preventDefault();
+        })
+
+        function fetchValues() {
+            // e.preventDefault();
+            var pb = document.querySelector("#pbody").value;
+            var ph = document.querySelector("#pheader").value;
+            console.log("Body:" + pb);
+            console.log("Header:" + ph);
+            writeUserData(pb, ph);
+        }
+
+        function writeUserData(body, header) {
+            var tId, uid, email;
+            // var newPostKey = firebase.database().ref().child('/data/').push().key;
+            // console.log("newpostKey:" + newPostKey);
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    uid = firebase.auth().currentUser.uid;
+                    email = firebase.auth().currentUser.email;
+                    console.log(uid);
+                    // console.log(email);
+                    // console.log('here2');
+
+                    firebase.database().ref().child('projectid').once("value", function (snapshot) {
+                        // console.log('here');
+                        var tId = snapshot.child(uid).val();
+                        console.log("tId: " + tId);
+                        firebase.database().ref(tId + '/').push({
+                            projectID: String(tId),
+                            projectHeader: String(header),
+                            projectBody: String(body),
+                            log: String(dateTime),
+                            status: "null"
+                        });
+                    })
+                    // $("#pheader").value="";
+                    // $("#pbody").value="";
+
+                } else {
+                    // No user is signed in.
+
+                }
+            });
+
+
+        }
+        $(document).ready(function () {
+            // console.log("ready");
+            return firebase.database().ref('/data/').once('value').then(function (snapshot) {
+                // var projectID = (snapshot.val() && snapshot.val().projectBody) || 'Anonymous';
+                var projectID = (snapshot.val() && snapshot.val().projectID);
+                console.log(projectID);
+                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
+                console.log(projectHeader);
+                var projectBody = (snapshot.val() && snapshot.val().projectBody);
+                console.log(projectBody);
+            });
+
+        })
+    </script>
+</body>
+
+</html>
