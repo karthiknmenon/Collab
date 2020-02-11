@@ -143,7 +143,12 @@
                         }
                     )
                 }
-                $(body).empty();
+                setTimeout(function () {
+                    const container = document.getElementById("contentHere");
+                    container.innerHTML = '';
+                }, 2000);
+
+                // $(body).empty();
                 // setTimeout(function () {
                 //     location.reload();
                 // }, 2000)
@@ -188,7 +193,8 @@
                                         addToDomChecked(value.childKey, value
                                             .childData);
                                     } else {
-                                        addToDom(value.childKey, value.childData);
+                                        addToDom(value.childKey, value
+                                            .childData);
                                     }
                                 });
                                 $(body).empty();
