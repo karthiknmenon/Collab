@@ -93,39 +93,31 @@
             });
         });
 
-        function writeUserData() {
-            // var newPostKey = firebase.database().ref().child('/data/').push().key;
-            // console.log("newpostKey:" + newPostKey);
-            firebase.database().ref('data/').push({
-                projectID: "H156",
-                projectHeader: "Aabasoft Review",
-                projectBody: "Add encryption of packet data.",
-                log: String(dateTime),
-            });
-        }
-
-        function fillData() {
-            return firebase.database().ref('/data/-M-fNWEVHwzQWq16oZ_g').once('value').then(function (snapshot) {
-                // var projectID = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-                var projectID = (snapshot.val() && snapshot.val().projectID);
-                document.getElementById("projectId").innerHTML = projectID;
-                var projectHeader = (snapshot.val() && snapshot.val().projectHeader);
-                document.getElementById("header").innerHTML = projectHeader;
-                var projectBody = (snapshot.val() && snapshot.val().projectBody);
-                document.getElementById("body").innerHTML = projectBody;
-                var logDate = (snapshot.val() && snapshot.val().log);
-                document.getElementById("logDate").innerHTML = logDate;
-            });
-        }
-
         function addToDom(key, data) {
             const container = document.getElementById("contentHere");
             const cardHtml = `
-            <div class="card text-center mt-3">
+            <div class="card border-danger text-center mt-3">
                     <div class="card-header" id="projectId">${data.projectID}</div>
                     <div class="card-body">
-                        <h5 class="card-title" id="header">${data.projectHeader}</h5>
-                        <p class="card-text" id="body">${data.projectBody}</p>
+                        <h5 class="card-title text-danger" id="header">${data.projectHeader}</h5>
+                        <p class="card-text text-danger" id="body">${data.projectBody}</p>
+                    </div>
+                    <div class="card-footer text-muted" id="logDate">${data.log}</div>
+                </div>`;
+            const imageEl = document.createElement('div');
+            imageEl.classList.add("col-12", "col-md-12")
+            imageEl.innerHTML = cardHtml;
+            container.appendChild(imageEl);
+        }
+
+        function addToDomChecked(key, data) {
+            const container = document.getElementById("contentHere");
+            const cardHtml = `
+            <div class="card border-success text-center mt-3">
+                    <div class="card-header" id="projectId">${data.projectID}</div>
+                    <div class="card-body">
+                        <h5 class="card-title text-success" id="header">${data.projectHeader}</h5>
+                        <p class="card-text text-success" id="body">${data.projectBody}</p>
                     </div>
                     <div class="card-footer text-muted" id="logDate">${data.log}</div>
                 </div>`;
@@ -161,7 +153,12 @@
                                 console.log(childData.log)
                             });
                             values.reverse().map((value) => {
-                                addToDom(value.childKey, value.childData);
+                                if (value.childData.status == "ok") {
+                                    addToDomChecked(value.childKey, value
+                                        .childData);
+                                } else {
+                                    addToDom(value.childKey, value.childData);
+                                }
                             });
                             console.log(values);
                             // console.log(values.log);
