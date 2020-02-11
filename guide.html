@@ -124,8 +124,8 @@
                         <div class="card-body">
                             <h5 class="card-title" id="header">${data.projectHeader}</h5>
                             <p class="card-text" id="body">${data.projectBody}</p>
-                            <button type="button" class="btn btn-outline-dark" id="childKey" onclick="changeStatus()">Check</button>
-                            <input type="hidden" id="key" value="${key}"></input>
+                            <button type="button" class="btn btn-outline-dark" id="childKey" value="${key}" onclick="changeStatus(this)">Check</button>
+                            <input type="hidden" id="uniqueKey"></input>
                         </div>
                         <div class="card-footer text-muted" id="logDate">${data.log}</div>
                     </div>`;
@@ -135,79 +135,75 @@
             container.appendChild(imageEl);
         }
 
-        function changeStatus() {
-            var uniqueId = document.getElementById("key").value;
-            // console.log("Change Status:"+uniqueId);
+        function changeStatus(obj) {
+            var uniqueId = obj.value;
+            // console.log("Change Status:" + uniqueId);
             firebase.auth().onAuthStateChanged(function (user) {
-                        if (user) {
-                            uid = firebase.auth().currentUser.uid;
-                            email = firebase.auth().currentUser.email;
-                            // console.log(uid);
-                            firebase.database().ref().child('projectid').once("value",
-                                function (snapshot) {
-                                    // console.log('here');
-                                    var tId = snapshot.child(uid).val();
-                                    firebase.database().ref(tId + '/' + uniqueId).push({
-                                        projectID: "H156",
-                                        projectHeader: "Aabasoft Review",
-                                        projectBody: "Add encryption of packet data.",
-                                        log: String(dateTime),
-                                        status: "ok"
+                if (user) {
+                    uid = firebase.auth().currentUser.uid;
+                    email = firebase.auth().currentUser.email;
+                    // console.log(uid);
+                    firebase.database().ref().child('projectid').once("value",
+                        function (snapshot) {
+                            // console.log('here');
+                            // console.log("unique id inside auth:" + uniqueId);
+                            var tId = snapshot.child(uid).val();
+                            firebase.database().ref(tId + '/' + uniqueId + '/status').set("ok");
+                        }
+                    )
+                }
+            });
+        };
+        $(document).ready(function () {
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    uid = firebase.auth().currentUser.uid;
+                    email = firebase.auth().currentUser.email;
+                    // console.log(uid);
+                    // console.log(email);
+                    // console.log('here2');
+
+                    firebase.database().ref().child('projectid').once("value",
+                        function (
+                            snapshot) {
+                            // console.log('here');
+                            var tId = snapshot.child(uid).val();
+                            // console.log("tId: " + tId);
+                            const values = [];
+                            var leadsRef = database.ref(tId + '/');
+                            leadsRef.on('value', function (snapshot) {
+                                snapshot.forEach(function (
+                                    childSnapshot) {
+                                    var childKey =
+                                        childSnapshot
+                                        .key;
+                                    console.log(childKey);
+                                    var childData =
+                                        childSnapshot
+                                        .val();
+                                    values.push({
+                                        childKey,
+                                        childData
                                     });
-                                }
-                            )}
-                        });
-                    };
-                    $(document).ready(function () {
-                        firebase.auth().onAuthStateChanged(function (user) {
-                            if (user) {
-                                uid = firebase.auth().currentUser.uid;
-                                email = firebase.auth().currentUser.email;
-                                console.log(uid);
-                                // console.log(email);
-                                // console.log('here2');
+                                    // console.log(childData.log)
+                                });
+                                values.reverse().map((value) => {
+                                    addToDom(value.childKey,
+                                        value
+                                        .childData);
+                                });
+                                // console.log(values);
+                                // console.log(values.log);
+                            });
 
-                                firebase.database().ref().child('projectid').once("value",
-                                    function (
-                                        snapshot) {
-                                        // console.log('here');
-                                        var tId = snapshot.child(uid).val();
-                                        // console.log("tId: " + tId);
-                                        const values = [];
-                                        var leadsRef = database.ref(tId + '/');
-                                        leadsRef.on('value', function (snapshot) {
-                                            snapshot.forEach(function (
-                                                childSnapshot) {
-                                                var childKey =
-                                                    childSnapshot
-                                                    .key;
-                                                // console.log(childKey);
-                                                var childData =
-                                                    childSnapshot
-                                                    .val();
-                                                values.push({
-                                                    childKey,
-                                                    childData
-                                                });
-                                                // console.log(childData.log)
-                                            });
-                                            values.reverse().map((value) => {
-                                                addToDom(value.childKey,
-                                                    value
-                                                    .childData);
-                                            });
-                                            // console.log(values);
-                                            // console.log(values.log);
-                                        });
-
-                                    })
-
-                            } else {
-                                // No user is signed in.
-
-                            }
                         })
-                    })
+
+                } else {
+                    // No user is signed in.
+
+                }
+            })
+        })
     </script>
 </body>
 
