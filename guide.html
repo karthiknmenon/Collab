@@ -128,7 +128,6 @@
 
         function changeStatus(obj) {
             var uniqueId = obj.value;
-            // console.log("Change Status:" + uniqueId);
             firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {
                     uid = firebase.auth().currentUser.uid;
@@ -139,15 +138,19 @@
                             // console.log('here');
                             // console.log("unique id inside auth:" + uniqueId);
                             var tId = snapshot.child(uid).val();
+                            kj = tId;
                             firebase.database().ref(tId + '/' + uniqueId + '/status').set("ok");
                         }
                     )
-                }
-                setTimeout(function () {
-                    const container = document.getElementById("contentHere");
-                    container.innerHTML = '';
-                }, 2000);
+                    var reloadRef = firebase.database().ref(uniqueId + '/');
+                    reloadRef.on('child_added', function (data) {
+                        console.log("child added");
+                    });
 
+                    reloadRef.on('child_changed', function (data) {
+                        console.log("child changed");
+                    });
+                }
                 // $(body).empty();
                 // setTimeout(function () {
                 //     location.reload();
@@ -155,6 +158,7 @@
             });
 
         };
+
         $(document).ready(function () {
             firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {

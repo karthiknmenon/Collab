@@ -138,19 +138,19 @@
                     firebase.database().ref().child('projectid').once("value", function (snapshot) {
                         // console.log('here');
                         var tId = snapshot.child(uid).val();
-                        console.log("tId: " + tId);
+                        // console.log("tId: " + tId);
                         const values = [];
                         var leadsRef = database.ref(tId + '/');
                         leadsRef.on('value', function (snapshot) {
                             snapshot.forEach(function (childSnapshot) {
                                 var childKey = childSnapshot.key;
-                                console.log(childKey);
+                                // console.log(childKey);
                                 var childData = childSnapshot.val();
                                 values.push({
                                     childKey,
                                     childData
                                 });
-                                console.log(childData.log)
+                                // console.log(childData.log)
                             });
                             values.reverse().map((value) => {
                                 if (value.childData.status == "ok") {
@@ -160,7 +160,7 @@
                                     addToDom(value.childKey, value.childData);
                                 }
                             });
-                            console.log(values);
+                            // console.log(values);
                             // console.log(values.log);
                         });
 
