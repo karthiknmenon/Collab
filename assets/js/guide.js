@@ -37,6 +37,7 @@ function addToDom(key, data) {
                     <h5 class="card-title" id="header">${data.projectHeader}</h5>
                     <p class="card-text" id="body">${data.projectBody}</p>
                     <button type="button" class="btn btn-outline-dark" id="childKey" value="${key}" onclick="changeStatus(this)">Check</button>
+                    <button type="button" class="btn btn-outline-danger" id="childKey" value="${key}" onclick="uncheckStatus(this)">Uncheck</button>
                     <input type="hidden" id="uniqueKey"></input>
                 </div>
                 <div class="card-footer text-muted" id="logDate">${data.log}</div>
@@ -55,6 +56,25 @@ function addToDomChecked(key, data) {
             <div class="card-body">
                 <h5 class="card-title text-success" id="header">${data.projectHeader}</h5>
                 <p class="card-text text-success" id="body">${data.projectBody}</p>
+                <button type="button" class="btn btn-outline-danger" id="childKey" value="${key}" onclick="uncheckStatus(this)">Uncheck</button>
+            </div>
+            <div class="card-footer text-muted" id="logDate">${data.log}</div>
+        </div>`;
+    const imageEl = document.createElement('div');
+    imageEl.classList.add("col-12", "col-md-12")
+    imageEl.innerHTML = cardHtml;
+    container.appendChild(imageEl);
+}
+
+function addToDomunChecked(key, data) {
+    const container = document.getElementById("contentHere");
+    const cardHtml = `
+    <div class="card border-danger text-center mt-3">
+            <div class="card-header" id="projectId">${data.projectID}</div>
+            <div class="card-body">
+                <h5 class="card-title text-danger" id="header">${data.projectHeader}</h5>
+                <p class="card-text text-danger" id="body">${data.projectBody}</p>
+                <button type="button" class="btn btn-outline-dark" id="childKey" value="${key}" onclick="changeStatus(this)">Check</button>
             </div>
             <div class="card-footer text-muted" id="logDate">${data.log}</div>
         </div>`;
@@ -77,7 +97,7 @@ function changeStatus(obj) {
                     // console.log("unique id inside auth:" + uniqueId);
                     var tId = snapshot.child(uid).val();
                     kj = tId;
-                    firebase.database().ref(tId + '/' + uniqueId + '/status').set("ok");
+                    var status = firebase.database().ref(tId + '/' + uniqueId + '/status').set("ok");
                 }
             )
             var reloadRef = firebase.database().ref(uniqueId + '/');
@@ -96,6 +116,40 @@ function changeStatus(obj) {
     });
 
 };
+
+function uncheckStatus(obj) {
+
+    var uniqueId = obj.value;
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            uid = firebase.auth().currentUser.uid;
+            email = firebase.auth().currentUser.email;
+            // console.log(uid);
+            firebase.database().ref().child('projectid').once("value",
+                function (snapshot) {
+                    // console.log('here');
+                    // console.log("unique id inside auth:" + uniqueId);
+                    var tId = snapshot.child(uid).val();
+                    kj = tId;
+                    var status = firebase.database().ref(tId + '/' + uniqueId + '/status').set("0");
+                }
+            )
+            var reloadRef = firebase.database().ref(uniqueId + '/');
+            reloadRef.on('child_added', function (data) {
+                console.log("child added");
+            });
+
+            reloadRef.on('child_changed', function (data) {
+                console.log("child changed");
+            });
+        }
+        // $(body).empty();
+        // setTimeout(function () {
+        //     location.reload();
+        // }, 2000)
+    });
+
+}
 
 $(document).ready(function () {
     firebase.auth().onAuthStateChanged(function (user) {
@@ -134,10 +188,14 @@ $(document).ready(function () {
                             if (value.childData.status == "ok") {
                                 addToDomChecked(value.childKey, value
                                     .childData);
+                            } else if (value.childData.status == "0") {
+                                addToDomunChecked(value.childKey, value
+                                    .childData);
                             } else {
                                 addToDom(value.childKey, value
                                     .childData);
                             }
+
                         });
                         $(body).empty();
                         // console.log(values);
