@@ -30,13 +30,14 @@ $("#logout-button").click(function (event) {
 function addToDom(key, data) {
     const container = document.getElementById("contentHere");
     // console.log("addToDom: "+key);
+    console.log(data.projectBody)
     const cardHtml = `
         <div class="card text-center mt-3">
                 <div class="card-header" id="projectId">${data.projectID}</div>
                 <div class="card-body">
-                    <h5 class="card-title" id="header">${data.projectHeader}</h5>
-                    <p class="card-text" id="body">${data.projectBody}</p>
-                    <button type="button" class="btn btn-outline-dark" id="childKey" value="${key}" onclick="changeStatus(this)" data-toggle="modal"
+                <h5 class="card-title text-danger" id="header">${data.projectHeader}</h5>
+                <p class="card-text text-danger" id="body">${data.projectBody}</p>
+                    <button type="button" class="btn btn-outline-success" id="childKey" value="${key}" onclick="changeStatus(this)" data-toggle="modal"
                         data-target="#staticBackdrop">Check</button>
                     <button type="button" class="btn btn-outline-danger" id="childKey" value="${key}" onclick="uncheckStatus(this)" data-toggle="modal"
                         data-target="#staticBackdrop">Uncheck</button>
@@ -77,7 +78,7 @@ function addToDomunChecked(key, data) {
             <div class="card-body">
                 <h5 class="card-title text-danger" id="header">${data.projectHeader}</h5>
                 <p class="card-text text-danger" id="body">${data.projectBody}</p>
-                <button type="button" class="btn btn-outline-dark" id="childKey" value="${key}" onclick="changeStatus(this)" data-toggle="modal"
+                <button type="button" class="btn btn-outline-success" id="childKey" value="${key}" onclick="changeStatus(this)" data-toggle="modal"
                         data-target="#staticBackdrop">Check</button>
             </div>
             <div class="card-footer text-muted" id="logDate">${data.log}</div>
@@ -201,7 +202,7 @@ $(document).ready(function () {
                             }
 
                         });
-                        $(body).empty();
+                        // $(body).empty();
                         // console.log(values);
                         // console.log(values.log);
                     });
@@ -214,3 +215,4 @@ $(document).ready(function () {
         }
     })
 })
+// 
