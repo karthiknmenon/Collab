@@ -30,7 +30,7 @@ $("#logout-button").click(function (event) {
 function addToDom(key, data) {
     const container = document.getElementById("contentHere");
     // console.log("addToDom: "+key);
-    console.log(data.projectBody)
+    // console.log(data.projectBody)
     const cardHtml = `
         <div class="card text-center mt-3">
                 <div class="card-header" id="projectId">${data.projectID}</div>
