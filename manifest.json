@@ -1,0 +1,21 @@
+{
+    "short_name": "Collab",
+    "name": "Collab - Project Notebook made Online",
+    "icons": [
+      {
+        "src": "/dist/images/logo-192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "/dist/images/logo-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "https://projectcollab.netlify.com",
+    "background_color": "#FFA000",
+    "display": "standalone",
+    "scope": "/maps/",
+    "theme_color": "#3367D6"
+  }
