@@ -23,33 +23,54 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link " href="../index.html">Home</a>
+                <a class="nav-item nav-link" href="./index.html">Home</a>
                 <a class="nav-item nav-link" href="#">Docs</a>
-                <a class="nav-item nav-link" href="./addNew.html">Write</a>
-                <a class="nav-item nav-link active" href="./review.html"><span class="sr-only">(current)</span>Log</a>
+                <a class="nav-item nav-link" href="./guideNew.html">Write</a>
+                <a class="nav-item nav-link active" href="./guide.html">Guide<span class="sr-only">(current)</span></a>
             </div>
 
         </div>
         <button class="btn btn-xs btn-outline-danger align-right" id="logout-button">Log Out</button>
     </nav>
-    <div class="container py-5 mt-3">
+    <div class="container">
         <div class="row">
             <h3 class="display-5 text-muted">Project Log</h3>
 
         </div>
         <div class="row mt-3">
             <div class="col-lg-12" id="contentHere">
-                <!-- <div class="card text-center">
-                    <div class="card-header" id="projectId"></div>
+                <!-- <div class="card text-center mt-3">
+                    <div class="card-header" id="projectId">H123</div>
                     <div class="card-body">
-                        <h5 class="card-title" id="header"></h5>
-                        <p class="card-text" id="body"></p>
+                        <h5 class="card-title" id="header">Header</h5>
+                        <p class="card-text" id="body">Body</p>
+                        <button type="button" class="btn btn-outline-dark">Check</button>
+                        <button type="button" class="btn btn-outline-danger">Uncheck</button>
                     </div>
-                    <div class="card-footer text-muted" id="logDate"></div>
+                    <div class="card-footer text-muted" id="logDate">Timestamp</div>
                 </div> -->
             </div>
         </div>
     </div>
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Submission Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Refresh Page for next submission.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" onclick="refresh();">Continue</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="" async defer></script>
 
@@ -63,7 +84,12 @@
     <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-database.js"></script>
-    <script src="./assets/js/review.js"></script>
+    <script src="./assets/js/guide.js"></script>
+    <script>
+        function refresh() {
+            location.reload();
+        }
+    </script>
 </body>
 
 </html>
