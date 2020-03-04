@@ -3,5 +3,7 @@
 </p>
 
 # Collab is project notebook made online
+### Teacher has Teacher's Auth and dashboard where a teacher can check or uncheck project team's log.
+
 * firebase
 * HTML, CSS, JS
